@@ -1,0 +1,472 @@
+<!doctype html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#10263e">
+    <meta name="description" content="CIC,bancaire.">
+    <title>CIC BANQUE</title>
+    <style>
+        :root {
+            --navy: #10263e;
+            --navy-2: #193956;
+            --teal: #167f78;
+            --mint: #a4e0d3;
+            --ink: #17283b;
+            --muted: #718096;
+            --line: #e6ebf0;
+            --paper: #fff;
+            --canvas: #f4f7fa;
+            --warning: #fff3d8;
+            --warning-ink: #775510;
+            --red: #a33a3a;
+            --shadow: 0 18px 48px rgba(16, 38, 62, .1);
+            font-family: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+        }
+        * { box-sizing: border-box; }
+        body { margin: 0; color: var(--ink); background: var(--canvas); }
+        button, input, select, textarea { font: inherit; }
+        button { cursor: pointer; }
+        .hidden { display: none !important; }
+        .demo-bar { padding: 9px 14px; color: #eaf5fa; background: var(--navy); text-align: center; font-size: .72rem; font-weight: 850; letter-spacing: .1em; text-transform: uppercase; }
+        .demo-bar strong { color: var(--mint); }
+        .brand { display: inline-flex; align-items: center; gap: 10px; font-weight: 850; letter-spacing: .13em; }
+        .brand-mark { width: 39px; height: 39px; display: grid; place-items: center; border-radius: 13px; color: white; background: linear-gradient(140deg, #51bba8, #12776f); box-shadow: 0 8px 18px #167f7835; letter-spacing: 0; }
+        .btn { display: inline-flex; min-height: 44px; align-items: center; justify-content: center; gap: 8px; padding: 0 17px; border: 1px solid transparent; border-radius: 12px; font-weight: 750; text-decoration: none; transition: transform .18s ease, box-shadow .18s ease; }
+        .btn:hover { transform: translateY(-1px); }
+        .btn-primary { color: white; background: linear-gradient(120deg, var(--navy), var(--teal)); box-shadow: 0 9px 20px #10263e24; }
+        .btn-outline { color: var(--navy); border-color: var(--line); background: white; }
+        .btn-soft { color: var(--teal); background: #e8f5f2; }
+        .login-shell { min-height: calc(100vh - 35px); display: grid; grid-template-columns: minmax(0, 1fr) minmax(380px, .75fr); }
+        .login-intro { position: relative; overflow: hidden; display: flex; align-items: center; padding: clamp(35px, 8vw, 110px); color: white; background: radial-gradient(circle at 85% 20%, #5bc4b533, transparent 30%), linear-gradient(135deg, #10263e, #1a4761 70%, #167f78); }
+        .login-intro::after { content: "N"; position: absolute; right: -25px; bottom: -180px; color: #ffffff0b; font-size: 34rem; font-weight: 900; line-height: 1; pointer-events: none; }
+        .intro-copy { position: relative; z-index: 1; max-width: 650px; }
+        .eyebrow { color: var(--mint); font-size: .74rem; font-weight: 850; letter-spacing: .17em; text-transform: uppercase; }
+        .login-intro h1 { margin: 22px 0 16px; font-size: clamp(2.7rem, 6vw, 5.2rem); line-height: 1; letter-spacing: -.06em; }
+        .login-intro p { max-width: 570px; color: #d7e4eb; line-height: 1.8; }
+        .intro-points { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 30px; }
+        .intro-points span { padding: 10px 13px; border: 1px solid #ffffff24; border-radius: 999px; background: #ffffff0b; color: #e2edf2; font-size: .78rem; }
+        .login-side { display: grid; place-items: center; padding: 30px; background: #f5f8fa; }
+        .login-card { width: min(440px, 100%); padding: 36px; border: 1px solid var(--line); border-radius: 22px; background: white; box-shadow: var(--shadow); }
+        .login-card h2 { margin: 25px 0 8px; color: var(--navy); font-size: 1.8rem; letter-spacing: -.045em; }
+        .login-card > p { color: var(--muted); line-height: 1.6; }
+        .credential-box { margin: 20px 0; padding: 14px; border-radius: 12px; color: var(--warning-ink); background: var(--warning); font-size: .82rem; line-height: 1.7; }
+        .field { display: grid; gap: 8px; margin: 15px 0; }
+        .field label { color: #34465b; font-size: .82rem; font-weight: 750; }
+        .field input, .field select, .field textarea, .toolbar input, .toolbar select { width: 100%; padding: 12px 14px; border: 1px solid #dce4eb; border-radius: 11px; outline: none; background: white; color: var(--ink); }
+        .field input:focus, .field select:focus, .field textarea:focus, .toolbar input:focus, .toolbar select:focus { border-color: var(--teal); box-shadow: 0 0 0 3px #167f781c; }
+        .field-error { min-height: 1.2em; color: var(--red); font-size: .78rem; }
+        .login-card .btn { width: 100%; margin-top: 6px; }
+        .fine-print { margin-top: 18px; font-size: .75rem; color: var(--muted); line-height: 1.6; }
+        .app-header { position: sticky; top: 0; z-index: 12; min-height: 70px; display: flex; align-items: center; justify-content: space-between; gap: 15px; padding: 10px 24px; border-bottom: 1px solid var(--line); background: #ffffffed; backdrop-filter: blur(14px); }
+        .header-right { display: flex; align-items: center; gap: 15px; }
+        .header-date { color: var(--muted); font-size: .83rem; }
+        .user-pill { display: inline-flex; align-items: center; gap: 9px; font-size: .88rem; font-weight: 750; }
+        .avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: var(--teal); background: #e6f4f0; font-weight: 850; }
+        .layout { max-width: 1500px; min-height: calc(100vh - 120px); margin: auto; display: grid; grid-template-columns: 235px minmax(0, 1fr); }
+        .sidebar { padding: 18px 12px; border-right: 1px solid var(--line); background: white; }
+        .nav-label { padding: 14px 12px 8px; color: #9aa8b7; font-size: .65rem; font-weight: 850; letter-spacing: .13em; text-transform: uppercase; }
+        .side-link { width: 100%; margin: 2px 0; padding: 11px 12px; border: 0; border-radius: 10px; color: #5c6e80; background: transparent; text-align: left; font-size: .85rem; font-weight: 650; }
+        .side-link:hover { color: var(--navy); background: #f4f8fa; }
+        .side-link.active { color: var(--teal); background: #eaf4f3; font-weight: 800; }
+        .side-link .icon { display: inline-block; width: 26px; }
+        .main-content { min-width: 0; padding: 30px clamp(16px, 3.5vw, 48px) 55px; }
+        .page-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 15px; margin-bottom: 22px; }
+        .page-heading h1 { margin: 0; color: var(--navy); font-size: clamp(1.6rem, 3vw, 2.2rem); letter-spacing: -.05em; }
+        .page-heading p { margin: 7px 0 0; color: var(--muted); line-height: 1.6; }
+        .badge { display: inline-flex; align-items: center; padding: 7px 10px; border-radius: 999px; color: #1a665f; background: #e4f5f1; font-size: .68rem; font-weight: 850; letter-spacing: .04em; text-transform: uppercase; white-space: nowrap; }
+        .badge-active { color: #257251; background: #e7f5ed; }
+        .badge-blocked { color: #994545; background: #fbebeb; }
+        .grid { display: grid; gap: 17px; }
+        .grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        .grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+        .panel, .metric-card, .account-card { min-width: 0; padding: 21px; border: 1px solid var(--line); border-radius: 16px; background: white; box-shadow: 0 5px 18px #10263e06; }
+        .panel h2, .panel h3 { margin: 0 0 13px; color: var(--navy); letter-spacing: -.025em; }
+        .panel p { color: var(--muted); line-height: 1.65; }
+        .metric-label { color: var(--muted); font-size: .8rem; }
+        .metric-value { margin-top: 10px; color: var(--navy); font-size: 1.75rem; font-weight: 850; letter-spacing: -.05em; }
+        .metric-caption { margin-top: 6px; color: var(--muted); font-size: .77rem; }
+        .account-hero { position: relative; overflow: hidden; padding: 26px; border-radius: 19px; color: white; background: radial-gradient(circle at 90% 15%, #65d0c439, transparent 29%), linear-gradient(125deg, #10263e, #1a4761 68%, #167f78); }
+        .account-hero::after { content: ""; position: absolute; top: -90px; right: 40px; width: 180px; height: 180px; border: 1px solid #ffffff38; border-radius: 50%; box-shadow: 0 0 0 24px #ffffff08, 0 0 0 48px #ffffff08; }
+        .account-hero .metric-label, .account-hero .metric-caption { color: #c9dde4; }
+        .account-hero .metric-value { position: relative; z-index: 1; color: white; font-size: clamp(2.1rem, 5vw, 3.1rem); }
+        .quick-actions { display: grid; grid-template-columns: repeat(4, 1fr); gap: 11px; margin: 16px 0 21px; }
+        .quick-action { display: grid; place-items: center; gap: 7px; min-height: 82px; padding: 10px; border: 1px solid var(--line); border-radius: 13px; color: var(--navy); background: white; font-size: .8rem; font-weight: 750; }
+        .quick-action:hover { border-color: #9bcfc6; background: #fbfefd; }
+        .quick-action span { font-size: 1.25rem; }
+        .status-box { padding: 16px; border-radius: 13px; color: var(--warning-ink); background: var(--warning); line-height: 1.65; font-size: .88rem; }
+        .status-box strong { display: block; margin-bottom: 5px; }
+        .chart-wrap { overflow: hidden; width: 100%; }
+        .chart-wrap svg { display: block; width: 100%; height: auto; }
+        .chart-grid { stroke: #eaf0f4; stroke-width: 1; }
+        .chart-line { fill: none; stroke: #168a80; stroke-width: 3; stroke-linecap: round; stroke-linejoin: round; }
+        .chart-area { fill: url(#areaFill); }
+        .table-wrap { width: 100%; overflow-x: auto; }
+        table { width: 100%; min-width: 560px; border-collapse: collapse; }
+        th, td { padding: 12px 10px; border-bottom: 1px solid #eef1f4; text-align: left; font-size: .84rem; }
+        th { color: #7d8b99; font-size: .69rem; letter-spacing: .08em; text-transform: uppercase; }
+        .positive { color: #168052; font-weight: 800; }
+        .negative { color: var(--ink); font-weight: 750; }
+        .account-type { color: var(--muted); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; }
+        .account-card h3 { margin: 8px 0; color: var(--navy); }
+        .account-balance { font-size: 1.55rem; font-weight: 850; letter-spacing: -.04em; }
+        .account-ref { margin-top: 13px; color: var(--muted); font-family: ui-monospace, monospace; font-size: .78rem; }
+        .toolbar { display: flex; flex-wrap: wrap; gap: 9px; margin: 14px 0; }
+        .toolbar input { flex: 1 1 210px; }
+        .toolbar select { width: auto; min-width: 145px; }
+        .notice { margin: 10px 0; padding: 14px; border: 1px solid var(--line); border-radius: 12px; background: #f8fafb; }
+        .notice.unread { border-left: 4px solid var(--teal); }
+        .notice small { display: block; margin-top: 5px; color: var(--muted); }
+        .card-visual { position: relative; overflow: hidden; max-width: 420px; min-height: 235px; padding: 22px; border-radius: 19px; color: white; background: radial-gradient(circle at 85% 20%, #8de5ce32, transparent 35%), linear-gradient(140deg, #122b49, #1b5261 75%, #168177); box-shadow: 0 18px 30px #10263e25; }
+        .card-top, .card-bottom { position: relative; z-index: 1; display: flex; align-items: center; justify-content: space-between; }
+        .card-chip { width: 37px; height: 29px; border-radius: 7px; background: linear-gradient(135deg, #f7e3a9, #be9b52); }
+        .card-number { position: relative; z-index: 1; margin: 31px 0 25px; font-family: ui-monospace, monospace; letter-spacing: .1em; }
+        .card-bottom { font-size: .71rem; letter-spacing: .08em; text-transform: uppercase; }
+        .messages { display: grid; gap: 9px; margin-bottom: 14px; }
+        .message { max-width: 86%; padding: 11px 14px; border-radius: 13px; background: #eff3f6; line-height: 1.55; }
+        .message.user { justify-self: end; color: white; background: var(--navy-2); }
+        .message small { display: block; margin-top: 4px; opacity: .7; font-size: .68rem; }
+        .footer-note { padding: 15px 20px 22px; color: var(--muted); text-align: center; font-size: .74rem; }
+        .modal-backdrop { position: fixed; inset: 0; z-index: 30; display: grid; place-items: center; padding: 18px; background: #071626a8; }
+        .modal { width: min(470px, 100%); padding: 26px; border-radius: 18px; background: white; box-shadow: var(--shadow); }
+        .modal h2 { margin: 0 0 10px; color: var(--navy); }
+        .modal p { color: var(--muted); line-height: 1.7; }
+        .modal-actions { display: flex; flex-wrap: wrap; gap: 9px; margin-top: 20px; }
+        .toast { position: fixed; right: 18px; bottom: 18px; z-index: 40; max-width: min(420px, calc(100vw - 36px)); padding: 13px 17px; border-radius: 12px; color: white; background: var(--navy); box-shadow: var(--shadow); }
+        @media (max-width: 1050px) {
+            .layout { grid-template-columns: 205px minmax(0, 1fr); }
+            .grid-3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+        }
+        @media (max-width: 760px) {
+            .login-shell { grid-template-columns: 1fr; }
+            .login-intro { min-height: 310px; padding: 34px 24px; }
+            .login-intro h1 { font-size: clamp(2.4rem, 11vw, 3.7rem); }
+            .login-side { padding: 22px 16px 35px; }
+            .login-card { padding: 26px 21px; }
+            .app-header { min-height: 64px; padding: 8px 13px; }
+            .header-date { display: none; }
+            .layout { display: block; }
+            .sidebar { position: fixed; right: 0; bottom: 0; left: 0; z-index: 15; display: flex; overflow-x: auto; gap: 4px; padding: 7px; border-top: 1px solid var(--line); border-right: 0; box-shadow: 0 -7px 20px #10263e0b; }
+            .sidebar .nav-label { display: none; }
+            .side-link { flex: 0 0 auto; width: auto; margin: 0; padding: 9px 10px; white-space: nowrap; font-size: .72rem; }
+            .side-link .icon { width: auto; margin-right: 4px; }
+            .main-content { padding: 23px 14px 100px; }
+            .grid-2, .grid-3 { grid-template-columns: 1fr; }
+            .quick-actions { grid-template-columns: repeat(2, 1fr); }
+            .page-heading { display: block; }
+            .page-heading > .badge { margin-top: 11px; }
+        }
+        @media (max-width: 390px) {
+            .brand { font-size: .83rem; }
+            .app-header .btn { min-height: 38px; padding: 0 10px; font-size: .76rem; }
+            .user-pill > span:last-child { display: none; }
+        }
+        @media (prefers-reduced-motion: reduce) {
+            *, *::before, *::after { transition-duration: .01ms !important; scroll-behavior: auto !important; }
+        }
+    </style>
+</head>
+<body>
+    <section id="loginPage">
+        <div class="demo-bar"><strong>CIC Banque</strong></div>
+        <div class="login-shell">
+            <section class="login-intro">
+                <div class="intro-copy">
+                    <span class="eyebrow">Espace bancaire</span>
+                    <h1>La finance,<br><span style="color:var(--mint)">plus claire.</span></h1>
+                    <div class="intro-points"><span>◇ Identité</span><span>↗ Parcours</span><span>◎ donnée bancaire</span></div>
+                </div>
+            </section>
+            <section class="login-side">
+                <div class="login-card">
+                    <div class="brand"><span class="brand-mark">C</span><span>CIC BANQUE</span></div>
+                    <h2>Connexion</h2>
+                    <p>Utilise uniquement les identifiants client.</p>
+                    <form id="loginForm" novalidate>
+                        <div class="field"><label for="username">Adresse e-mail</label><input id="username" type="email" autocomplete="username" value="mclairesauret@gmail.com" required></div>
+                        <div class="field"><label for="password">Code client</label><input id="password" type="password" autocomplete="current-password" placeholder="Saisir le code client" required></div>
+                        <div class="field-error" id="loginError" role="alert"></div>
+                        <button class="btn btn-primary" type="submit">Se connecter</button>
+                    </form>
+                </div>
+            </section>
+        </div>
+    </section>
+
+    <section class="hidden" id="app">
+        <header class="app-header">
+            <div class="brand"><span class="brand-mark">C</span><span>CIC BANQUE</span></div>
+            <div class="header-right"><span class="header-date" id="currentDate"></span><div class="user-pill"><span class="avatar" id="avatar">VD</span><span id="displayName">Sauret Marie Claire </span></div><button class="btn btn-outline" data-action="logout">Quitter</button></div>
+        </header>
+        <div class="demo-bar">CIC BANQUE OFFICIEL</div>
+        <div class="layout">
+            <nav class="sidebar" aria-label="Navigation principale">
+                <div class="nav-label">Espace client</div>
+                <button class="side-link active" data-page="home"><span class="icon">⌂</span>Accueil</button>
+                <button class="side-link" data-page="accounts"><span class="icon">▤</span>Mes comptes</button>
+                <button class="side-link" data-page="transfers"><span class="icon">⇄</span>Virements</button>
+                <button class="side-link" data-page="beneficiaries"><span class="icon">♙</span>Bénéficiaires</button>
+                <button class="side-link" data-page="cards"><span class="icon">▣</span>Cartes</button>
+                <button class="side-link" data-page="rib"><span class="icon">▧</span>RIB</button>
+                <button class="side-link" data-page="history"><span class="icon">◷</span>Historique</button>
+                <div class="nav-label">Services</div>
+                <button class="side-link" data-page="documents"><span class="icon">▤</span>Documents</button>
+                <button class="side-link" data-page="notifications"><span class="icon">◉</span>Notifications <span id="unreadCount"></span></button>
+                <button class="side-link" data-page="messages"><span class="icon">✉</span>Messagerie</button>
+                <button class="side-link" data-page="status"><span class="icon">ⓘ</span>Statut du compte</button>
+                <button class="side-link" data-page="profile"><span class="icon">♙</span>Profil</button>
+                <button class="side-link" data-page="help"><span class="icon">?</span>Assistance</button>
+                <button class="side-link" data-page="admin"><span class="icon">⚙</span>Administration</button>
+            </nav>
+            <main class="main-content" id="content" tabindex="-1"></main>
+        </div>
+    </section>
+    <div id="modalRoot"></div><div id="toastRoot" aria-live="polite"></div>
+
+    <script>
+        (() => {
+            "use strict";
+            const DEMO_USER = "mclairesauret@gmail.com";
+            const DEMO_PASS = "Bonjour2026@";
+            const money = new Intl.NumberFormat("fr-FR", { style: "currency", currency: "EUR" });
+            const dateLabel = new Intl.DateTimeFormat("fr-FR", { dateStyle: "long" }).format(new Date());
+            const accounts = [
+                { id: "courant", type: "Compte courant", name: "Compte principal", balance: 758350, ref: "CIC-0001", status: "BLOQUÉ" },
+            { id: "epargne", type: "Épargne", name: "Épargne projet", balance: 6150, ref: "CIC-0002", status: "BLOQUÉ" },
+                { id: "projet", type: "Projet", name: "Projet futur", balance: 960, ref: "CIC-0003", status: "BLOQUÉ" }
+            ];
+            const state = {
+                name: "Sauret Marie Claire", page: "home", status: "BLOQUÉ",
+                beneficiaries: [""],
+                notifications: [
+                    { title: "Compte bloqué, déblocage", text: "compte suspendu.", read: false },
+                    { title: "Virements", text: "virement en attente.", read: false },
+                    { title: "Document", text: "Les références.", read: true }
+                ],
+                messages: [{ user: false, text: "Bonjour ! Je suis l’assistant de CIC BANQUE. Pose-moi une question sur les fonctions." }],
+                transactions: [
+                    { date: "2025-10-20", type: "Paiement", label: "Café", amount: -8.4, status: "reçu" },
+                    { date: "2025-10-24", type: "Virement", label: "Ami", amount: 125, status: "reçu" },
+                    { date: "2024-10-20", type: "Dépôt", label: "Alimentation du compte", amount: 240, status: "reçu" },
+                    { date: "2024-10-16", type: "Paiement", label: "Librairie", amount: -32.9, status: "reçu" },
+                    { date: "2023-10-11", type: "Frais", label: "Exemple de frais", amount: -2.5, status: "reçu" }
+                ],
+                balanceHistory: [5320, 5620, 5510, 6000, 6328.65]
+            };
+            const titles = {
+                home: ["Vue d’ensemble", "Votre espace client, en un coup d’œil."],
+                accounts: ["Mes comptes", "Soldes et références."],
+                transfers: ["Virements"],
+                beneficiaries: ["Bénéficiaires", "Liste de contacts pour les virements."],
+                cards: ["Carte", "Données de carte"],
+                rib: ["Coordonnées", "RIB et IBAN."],
+                history: ["Historique"],
+                documents: ["Documents"],
+                notifications: ["Centre de notifications"],
+                messages: ["Messagerie"],
+                status: ["Statut du compte"],
+                profile: ["Profil & préférences"],
+                help: ["Assistance", "Questions fréquentes sur le prototype."],
+                admin: ["Administration"]
+            };
+            const content = document.getElementById("content");
+            const esc = value => String(value).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" })[c]);
+            const initials = name => name.trim().split(/\s+/).slice(0, 2).map(part => part[0] || "").join("").toUpperCase() || "D";
+            const statusBadge = status => `<span class="badge ${status === "BLOQUÉ" ? "badge-blocked" : "badge-active"}">${esc(status)} ·</span>`;
+            const heading = page => `<div class="page-heading"><div><h1>${titles[page][0]}</h1><p>${titles[page][1]}</p></div><span class="badge">Données</span></div>`;
+            const table = rows => `<div class="table-wrap"><table><thead><tr><th>Date</th><th>Type</th><th>Libellé</th><th>Montant</th><th>Statut</th></tr></thead><tbody>${rows || `<tr><td colspan="5">Résultat.</td></tr>`}</tbody></table></div>`;
+            const transactionRows = rows => rows.map(item => `<tr><td>${esc(new Intl.DateTimeFormat("fr-FR").format(new Date(item.date + "T12:00:00")))}</td><td>${esc(item.type)}</td><td>${esc(item.label)}</td><td class="${item.amount >= 0 ? "positive" : "negative"}">${item.amount >= 0 ? "+" : "−"}${money.format(Math.abs(item.amount))}</td><td><span class="badge">${esc(item.status)}</span></td></tr>`).join("");
+            function chart() {
+                const points = state.balanceHistory.map((amount, index) => ({ x: 40 + index * 138, y: 158 - index * 20 + (index === 2 ? 18 : 0), amount }));
+                const line = points.map((p, i) => `${i ? "L" : "M"}${p.x} ${p.y}`).join(" ");
+                return `<svg viewBox="0 0 640 205" role="img" aria-label="Graphique d’évolution"><defs><linearGradient id="fill" x1="0" x2="0" y1="0" y2="1"><stop offset="0" stop-color="#168a80" stop-opacity=".24"/><stop offset="1" stop-color="#168a80" stop-opacity="0"/></linearGradient></defs><path class="chart-grid" d="M25 35H620M25 80H620M25 125H620M25 170H620"/><path class="chart-area" d="${line} L592 180 L40 180Z"/><path class="chart-line" d="${line}"/>${points.map(p => `<circle cx="${p.x}" cy="${p.y}" r="4" fill="#168a80"/>`).join("")}</svg>`;
+            }
+            function render() {
+                const total = accounts.reduce((sum, item) => sum + item.balance, 0);
+                let body = "";
+                if (state.page === "home") body = `<section class="account-hero"><div class="metric-label">Solde · ${dateLabel}</div><div class="metric-value">${money.format(total)}</div><div class="metric-caption">Solde</div></section>
+                    <div class="quick-actions"><button class="quick-action" data-page="transfers"><span>⇄</span>Faire un virement</button><button class="quick-action" data-page="cards"><span>▣</span>Mes cartes</button><button class="quick-action" data-page="rib"><span>▧</span>Mon RIB</button><button class="quick-action" data-page="history"><span>◷</span>Historique</button></div>
+                    <div class="grid grid-2"><section class="panel"><h2>Évolution du solde</h2><p>Données entièrement.</p><div class="chart-wrap">${chart()}</div></section><section class="panel"><h2>Statut du compte</h2><div class="status-box"><strong>${esc(state.status)}</strong>${state.status === "BLOQUÉ" ? "Les virements et fonctions de carte sont désactivés." : "Les parcours accessibles"}</div><p><button class="btn btn-soft" data-page="status">Comprendre le statut</button></p></section></div>
+                    <section class="panel" style="margin-top:17px"><h2>Dernières opérations</h2>${table(transactionRows(state.transactions.slice(0, 3)))}</section>`;
+                else if (state.page === "accounts") body = `<div class="grid grid-3">${accounts.map(a => `<article class="account-card"><div class="account-type">${esc(a.type)} ·</div><h3>${esc(a.name)}</h3><div class="account-balance">${money.format(a.balance)}</div><div class="account-ref">${esc(a.ref)} · référence bancaire</div><p>${statusBadge(a.status)}</p><button class="btn btn-outline" data-action="account-details" data-id="${a.id}">Voir le détail</button></article>`).join("")}</div>`;
+                else if (state.page === "transfers") body = `<div class="grid grid-2"><section class="panel"><h2>Nouvelle</h2><p></p><form id="transferForm"><div class="field"><label for="source">Compte</label><select id="source">${accounts.map(a => `<option value="${a.id}">${esc(a.name)} — ${money.format(a.balance)}</option>`).join("")}</select></div><div class="field"><label for="beneficiary">Bénéficiaire</label><select id="beneficiary">${state.beneficiaries.map((b, i) => `<option value="${i}">${esc(b)}</option>`).join("")}</select></div><div class="field"><label for="amount">Montant (€)</label><input id="amount" type="number" min=".01" max="10000" step=".01" placeholder="25,00" required></div><div class="field"><label for="reason">Motif</label><input id="reason" maxlength="80" placeholder="motif" required></div><button class="btn btn-primary">Prévisualiser</button></form></section><section class="panel"><h2>Parcours de restriction</h2><div class="status-box"><strong>VIREMENT INDISPONIBLE</strong></div></section></div>`;
+                else if (state.page === "beneficiaries") body = `<section class="panel"><h2>Ajouter un bénéficiaire</h2><p>entre tes coordonnée bancaire.</p><form id="beneficiaryForm" class="toolbar"><input id="beneficiaryName" maxlength="32" placeholder="Nom inventé" required><button class="btn btn-primary">Ajouter à la session</button></form>${state.beneficiaries.map((b, i) => `<article class="notice"><strong>${esc(b)}</strong><small>Profil — référence inutilisable</small><button class="btn btn-outline" style="margin-top:9px" data-action="remove-beneficiary" data-index="${i}">Retirer</button></article>`).join("")}</section>`;
+                else if (state.page === "cards") body = `<div class="grid grid-2"><section class="panel"><h2>Carte CIC·</h2><div class="card-visual"><div class="card-top"><strong>CIC</strong><span class="badge"></span></div><div class="card-number"><span class="card-chip"></span> &nbsp; •••• &nbsp; •••• &nbsp; •••• &nbsp; 0000</div><div class="card-bottom"><span>${esc(state.name)}</span><span>MM/AA</span></div></div><p>Illustration, aucun numéro ou cryptogramme utilisable.</p></section><section class="panel"><h2>Fonctions carte</h2><div class="status-box"><strong>CARTE ${state.status === "BLOQUÉ" ? "INDISPONIBLE" : "ACTIVE"}</strong>Aucun paiement pour le moment  n’est possible .</div><p><button class="btn btn-outline" data-action="card-preview">aperçu</button></p></section></div>`;
+                else if (state.page === "rib") body = `<section class="panel"><h2>Coordonnées</h2><div class="status-box"><strong>DOCUMENT</strong>.</div><div class="grid grid-2" style="margin-top:16px"><div><p><strong>Titulaire</strong><br>${esc(state.name)} · personnage</p><p><strong>Banque</strong><br>cic</p><p><strong>Code banque / guichet</strong><br>00 000 · 00 000</p></div><div><p><strong>Numéro de compte</strong><br>00000000000</p><p><strong>IBAN</strong><br>FR00 0000 0000 0000 0000 0000 000</p><p><strong>BIC</strong><br>XXXX</p></div></div><span class="badge">Généré le ${dateLabel} · CIC-0001</span><div class="toolbar" style="margin-top:18px"><button class="btn btn-primary" data-action="copy-rib">Copier</button><button class="btn btn-outline" data-action="download-rib">Télécharger le RIB</button></div></section>`;
+                else if (state.page === "history") body = `<section class="panel"><div class="page-heading"><div><h2>Opérations</h2><p>Les montants du solde.</p></div><button class="btn btn-outline" data-action="export-csv">Exporter</button></div><div class="toolbar"><input id="historySearch" placeholder="Rechercher un libellé"><select id="historyType"><option value="">Tous les types</option>${[...new Set(state.transactions.map(t => t.type))].map(t => `<option>${esc(t)}</option>`).join("")}</select></div><div id="historyTable">${table(transactionRows(state.transactions))}</div></section>`;
+                else if (state.page === "documents") body = `<div class="grid grid-3">${["Fiche des coordonnées", "Relevé — octobre"].map((name, i) => `<section class="panel"><span class="badge"></span><h2 style="margin-top:13px">${name}</h2><p>Créé le ${dateLabel}.établissement financier.</p><button class="btn btn-outline" data-action="download-document" data-doc="${i}">Télécharger</button></section>`).join("")}</div>`;
+                else if (state.page === "notifications") body = `<section class="panel"><div class="page-heading"><div><h2>Alertes</h2><p>${state.notifications.filter(n => !n.read).length} non lue(s) dans cette session.</p></div><button class="btn btn-outline" data-action="read-all">Tout marquer comme lu</button></div>${state.notifications.map((n, i) => `<article class="notice ${n.read ? "" : "unread"}"><strong>${esc(n.title)}</strong><p>${esc(n.text)}</p><small>${n.read ? "Lue" : "Non lue"} </small>${n.read ? "" : `<button class="btn btn-soft" style="margin-top:8px" data-action="read-notification" data-index="${i}">Marquer comme lue</button>`}</article>`).join("")}</section>`;
+                else if (state.page === "messages") body = `<div class="grid grid-2"><section class="panel"><h2>Assistant bancaire</h2><div class="messages">${state.messages.map(m => `<div class="message ${m.user ? "user" : ""}">${esc(m.text)}<small>À l’instant</small></div>`).join("")}</div><form id="messageForm" class="toolbar"><input id="messageText" maxlength="300" placeholder="Écrire un message…" required><button class="btn btn-primary">Envoyer</button></form></section><section class="panel"><h2>Questions fréquentes</h2>${["Un virement est-il réel ?", "Pourquoi la carte est-elle indisponible ?", "Les coordonnées sont-elles utilisables ?", "Comment fonctionne le statut ?"].map(q => `<button class="btn btn-outline" style="width:100%;margin:5px 0;text-align:left" data-action="faq" data-question="${esc(q)}">${q}</button>`).join("")}</section></div>`;
+                else if (state.page === "status") body = `<div class="grid grid-2"><section class="panel"><h2>Statut actuel</h2>${statusBadge(state.status)}<p><strong>Mis à jour :</strong>20.02.2026</p><p><strong>Référence :</strong> CIC-STATUT</p><p>une décision bancaire.</p></section><section class="panel"><h2>Fonctionnalités</h2><p>✓ Consultation des comptes</p><p>✓ Historique et documents</p><p>${state.status === "ACTIF" ? "✓ Virements disponibles" : "— Virements indisponibles"}</p><p>${state.status === "ACTIF" ? "✓ Aperçu de carte disponible" : "— Carte indisponible"}</p></section></div><section class="panel" style="margin-top:17px"><div class="status-box"><strong>Restriction</strong>Une restriction administrative sur votre compte.</div></section>`;
+                else if (state.page === "profile") body = `<section class="panel"><h2>Informations</h2><p></p><form id="profileForm"><div class="field"><label for="profileName">Nom d’affichage</label><input id="profileName" maxlength="32" value="${esc(state.name)}" required></div><button class="btn btn-primary">Mettre à jour</button></form><hr style="border:0;border-top:1px solid var(--line);margin:23px 0"><label style="display:flex;gap:10px;align-items:center"><input id="notificationsToggle" type="checkbox" checked> Notifications activées</label><p>La session est uniquement en mémoire et sera fermée en quittant.</p></section>`;
+                content.innerHTML = heading(state.page) + body;
+                document.querySelectorAll(".side-link").forEach(el => el.classList.toggle("active", el.dataset.page === state.page));
+                const unread = state.notifications.filter(n => !n.read).length;
+                document.getElementById("unreadCount").textContent = unread ? `(${unread})` : "";
+                content.focus({ preventScroll: true });
+            }
+            function navigate(page) {
+                if (!titles[page]) return;
+                document.getElementById("modalRoot").innerHTML = "";
+                state.page = page; render(); window.scrollTo({ top: 0, behavior: "smooth" });
+            }
+            function toast(text) {
+                const root = document.getElementById("toastRoot");
+                root.innerHTML = `<div class="toast">${esc(text)}</div>`;
+                setTimeout(() => root.innerHTML = "", 2800);
+            }
+            function openModal(title, message, actions = `<button class="btn btn-primary" data-action="close-modal">Compris</button>`) {
+                document.getElementById("modalRoot").innerHTML = `<div class="modal-backdrop" data-action="close-modal"><section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle"><h2 id="modalTitle">${esc(title)}</h2><p>${message}</p><div class="modal-actions">${actions}</div></section></div>`;
+            }
+            function download(filename, text, type = "text/plain;charset=utf-8") {
+                const url = URL.createObjectURL(new Blob([text], { type }));
+                const a = document.createElement("a"); a.href = url; a.download = filename; a.click();
+                setTimeout(() => URL.revokeObjectURL(url), 1000);
+            }
+            function safeCell(value) {
+                let text = String(value);
+                if (typeof value === "string" && /^[\s]*[=+\-@]/.test(text)) text = "'" + text;
+                return `"${text.replace(/"/g, '""')}"`;
+            }
+            function answer(question) {
+                const q = question.toLowerCase();
+                if (q.includes("virement")) return "Votre compte est bloqué. Pour le débloquer, veuillez suivre la procédure avec un agent.";
+                if (q.includes("carte")) return "Votre compte est bloqué. Pour le débloquer, veuillez suivre la procédure avec un agent.";
+                if (q.includes("coordonnée") || q.includes("rib")) return "Votre compte est bloqué. Pour le débloquer, veuillez suivre la procédure avec un agent.";
+                if (q.includes("statut")) return "Votre compte est bloqué. Pour le débloquer, veuillez suivre la procédure avec un agent.";
+                return "Je peux expliquer les comptes, virements, cartes, RIB, documents et statuts.";
+            }
+            function filterHistory() {
+                const search = (document.getElementById("historySearch")?.value || "").trim().toLowerCase();
+                const type = document.getElementById("historyType")?.value || "";
+                const rows = state.transactions.filter(t => (!type || t.type === type) && (!search || t.label.toLowerCase().includes(search)));
+                const target = document.getElementById("historyTable");
+                if (target) target.innerHTML = table(transactionRows(rows));
+            }
+
+            document.getElementById("loginForm").addEventListener("submit", event => {
+                event.preventDefault();
+                const user = document.getElementById("username").value.trim();
+                const pass = document.getElementById("password").value;
+                const error = document.getElementById("loginError");
+                if (user !== DEMO_USER || pass !== DEMO_PASS) {
+                    error.textContent = "Identifiants incorrects.";
+                    return;
+                }
+                error.textContent = "";
+                document.getElementById("loginPage").classList.add("hidden");
+                document.getElementById("app").classList.remove("hidden");
+                document.getElementById("currentDate").textContent = dateLabel;
+                document.getElementById("displayName").textContent = state.name;
+                document.getElementById("avatar").textContent = initials(state.name);
+                navigate("home");
+            });
+
+            document.addEventListener("click", async event => {
+                const page = event.target.closest("[data-page]");
+                if (page) { navigate(page.dataset.page); return; }
+                const action = event.target.closest("[data-action]");
+                if (!action) return;
+                switch (action.dataset.action) {
+                    case "logout":
+                        document.getElementById("app").classList.add("hidden");
+                        document.getElementById("loginPage").classList.remove("hidden");
+                        document.getElementById("password").value = "";
+                        state.page = "home";
+                        break;
+                    case "account-details": {
+                        const account = accounts.find(a => a.id === action.dataset.id);
+                        if (account) openModal(account.name, `Solde : <strong>${money.format(account.balance)}</strong><br>Référence : <strong>${esc(account.ref)}</strong><br>Statut : <strong>${esc(account.status)}</strong><br><br>compte bloqué.`);
+                        break;
+                    }
+                    case "remove-beneficiary": {
+                        const index = Number(action.dataset.index);
+                        if (Number.isInteger(index) && index >= 0 && index < state.beneficiaries.length) { state.beneficiaries.splice(index, 1); render(); toast("Bénéficiaire retiré."); }
+                        break;
+                    }
+                    case "card-preview":
+                        openModal("Aperçu de carte");
+                        break;
+                    case "copy-rib":
+                        try { await navigator.clipboard.writeText("NEXA — DONNÉES — IBAN FR00 0000 0000 0000 0000 0000 000 — NON UTILISABLE"); toast("copiés."); }
+                        catch { openModal("Copie indisponible",); }
+                        break;
+                    case "download-rib":
+                        download("NEXA-rib.txt", `NEXA — RIB \nDOCUMENT\nTitulaire : ${state.name} (personnage)\nIBAN : FR00 0000 0000 0000 0000 0000 000\nBIC : XXXX\nRéférence : NEXA-0001\nAucune opération bancaire pour le moment.`);
+                        toast("RIB téléchargé."); break;
+                    case "download-document": {
+                        const names = ["Fiche", "Relevé", "Attestation"];
+                        const index = Number(action.dataset.doc);
+                        if (names[index]) download(`nexa-document-${index + 1}- Direct.txt`, `NEXA — ${names[index].toUpperCase()}\nDOCUMENT\nToutes les informations sont bloquer en ce moment.\nGénéré le ${dateLabel}.`);
+                        break;
+                    }
+                    case "export-csv": {
+                        const rows = [["NEXA — EXPORT — DONNÉES", "", "", "", ""], ["Date", "Type", "Libellé", "Montant EUR", "Statut"], ...state.transactions.map(t => [t.date, t.type, t.label, t.amount, t.status])];
+                        download("nexa-historique-.csv", "\ufeff" + rows.map(row => row.map(safeCell).join(";")).join("\r\n"), "text/csv;charset=utf-8");
+                        toast("Export téléchargé."); break;
+                    }
+                    case "read-all":
+                        state.notifications.forEach(n => n.read = true); render(); break;
+                    case "read-notification": {
+                        const n = state.notifications[Number(action.dataset.index)];
+                        if (n) { n.read = true; render(); }
+                        break;
+                    }
+                    case "faq": {
+                        const question = action.dataset.question;
+                        state.messages.push({ user: true, text: question }, { user: false, text: answer(question) });
+                        navigate("messages"); break;
+                    }
+                    case "close-modal":
+                        if (action.classList.contains("modal-backdrop") || action.tagName === "BUTTON") document.getElementById("modalRoot").innerHTML = "";
+                        break;
+                }
+            });
+
+            document.addEventListener("submit", event => {
+                event.preventDefault();
+                if (event.target.id === "transferForm") {
+                    const account = accounts.find(a => a.id === document.getElementById("source").value);
+                    const amount = Number(document.getElementById("amount").value);
+                    const beneficiary = state.beneficiaries[Number(document.getElementById("beneficiary").value)];
+                    const reason = document.getElementById("reason").value.trim();
+                    if (!account || !Number.isFinite(amount) || amount <= 0 || amount > 10000 || !beneficiary || !reason) { toast("Vérifie les champs et le montant (0,01 € à 10 000 €)."); return; }
+                    const detail = `Montant d’exemple : ${money.format(amount)}. Bénéficiaire : ${esc(beneficiary)}. Motif : ${esc(reason)}.`;
+                    if (state.status !== "ACTIF" || account.status === "BLOQUÉ") {
+                        openModal("VIREMENT INDISPONIBLE", `Cette demande est refusée.<br><br>${detail}<br><br>Aucune somme n’a été débitée ou transférée.`, `<button class="btn btn-outline" data-page="status">Comprendre la restriction</button><button class="btn btn-primary" data-action="close-modal">Retour</button>`);
+                    } else {
+                        state.transactions.unshift({ date: new Date().toISOString().slice(0, 10), type: "Virement", label: `Vers ${beneficiary} — ${reason}`, amount: -amount, status: "" });
+                        openModal("terminée", `${detail}<br><br>Aucun virement n’a été effectué.`);
+                    }
+                } else if (event.target.id === "beneficiaryForm") {
+                    const name = document.getElementById("beneficiaryName").value.trim();
+                    if (name.length < 2) { toast("Saisis un nom d’au moins deux caractères."); return; }
+                    state.beneficiaries.push(name); render(); toast("Nom ajouté à la session.");
+                } else if (event.target.id === "messageForm") {
+                    const input = document.getElementById("messageText"), text = input.value.trim();
+                    if (text) { state.messages.push({ user: true, text }, { user: false, text: answer(text) }); render(); }
+                } else if (event.target.id === "profileForm") {
+                    state.name = document.getElementById("profileName").value.trim().slice(0, 32);
+                    document.getElementById("displayName").textContent = state.name;
+                    document.getElementById("avatar").textContent = initials(state.name);
+                    render(); toast("Nom d’affichage actualisé.");
+                } else if (event.target.id === "statusForm") {
+                    state.status = document.getElementById("statusSelect").value;
+                    accounts[0].status = state.status;
+                    render(); toast("Statut actualisé.");
+                }
+            });
+            document.addEventListener("input", event => {
+                if (event.target.id === "historySearch") filterHistory();
+            });
+            document.addEventListener("change", event => {
+                if (event.target.id === "historyType") filterHistory();
+                if (event.target.id === "notificationsToggle") toast(event.target.checked ? "Notifications activées." : "Notifications désactivées.");
+            });
+            document.addEventListener("keydown", event => {
+                if (event.key === "Escape") document.getElementById("modalRoot").innerHTML = "";
+            });
+        })();
+    </script>
+</body>
+</html>
